@@ -5,78 +5,137 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.CodeDom;
 
 namespace CalculatorDLL
 {
     public class Calculator
     {
-        public T Add<T>(T item1, T item2)
+        List<Type> typeList = new List<Type>();
+        public Calculator()
         {
-            try
-            {
-                dynamic num1 = ConvertToNumeric(item1);
-                dynamic num2 = ConvertToNumeric(item2);
-                return (T)Convert.ChangeType(num1+num2, typeof(T));
-            }
-            catch (Exception ex)
-            {
-                return (T)Convert.ChangeType("Please enter a valid numeric type.", typeof(T));
-            }
+            typeList.Add(typeof(int));
+            typeList.Add(typeof(double));
+            typeList.Add(typeof(long));
+            typeList.Add(typeof(float));
+            typeList.Add(typeof(string));
         }
-        public T Multiply<T>(T item1, T item2)
+        public dynamic Add(dynamic item1, dynamic item2)
         {
-            try
+            if(!typeList.Contains(item1.GetType()) && !typeList.Contains(item2.GetType()))
             {
-                dynamic num1 = ConvertToNumeric(item1);
-                dynamic num2 = ConvertToNumeric(item2);
-                return (T)Convert.ChangeType(num1*num2, typeof(T));
+                return "Please enter a numeric value.";
             }
-            catch (Exception ex)
+
+            if (item1.GetType() == typeof(string) && item2.GetType() == typeof(string))
             {
-                throw new Exception("Please enter a valid numeric type.");
+                var num1 = GetParsedValue(item1, typeList);
+                var num2 = GetParsedValue(item2, typeList);
+                if(num1 == null || num2 == null)
+                {
+                    return "Please enter valid numeric value.";
+                }
+                return num1+num2;
             }
+            else
+            {
+                var result = item1 + item2;
+                return result;
+            }
+            return "Please enter a valid number";
         }
-        public T Substract<T>(T item1, T item2)
+        public dynamic Multiply(dynamic item1, dynamic item2)
         {
-            try
+            if (!typeList.Contains(item1.GetType()) && !typeList.Contains(item2.GetType()))
             {
-                dynamic num1 = ConvertToNumeric(item1);
-                dynamic num2 = ConvertToNumeric(item2);
-                return (T)Convert.ChangeType(num1-num2, typeof(T));
+                return "Please enter a numeric value.";
             }
-            catch (Exception ex)
+
+            if (item1.GetType() == typeof(string) && item2.GetType() == typeof(string))
             {
-                throw new Exception("Please enter a valid numeric type.");
+                var num1 = GetParsedValue(item1, typeList);
+                var num2 = GetParsedValue(item2, typeList);
+                if (num1 == null || num2 == null)
+                {
+                    return "Please enter valid numeric value.";
+                }
+                return num1 * num2;
             }
+            else
+            {
+                var result = item1 * item2;
+                return result;
+            }
+            return "Please enter a valid number";
         }
-        public T Divide<T>(T item1, T item2)
+        public dynamic Substract(dynamic item1, dynamic item2)
         {
-            try
+            if (!typeList.Contains(item1.GetType()) && !typeList.Contains(item2.GetType()))
             {
-                dynamic num1 = ConvertToNumeric(item1);
-                dynamic num2 = ConvertToNumeric(item2);
-                return (T)Convert.ChangeType(num1/num2, typeof(T));
+                return "Please enter a numeric value.";
             }
-            catch (Exception ex)
+
+            if (item1.GetType() == typeof(string) && item2.GetType() == typeof(string))
             {
-                throw new Exception("Please enter a valid numeric type.");
+                var num1 = GetParsedValue(item1, typeList);
+                var num2 = GetParsedValue(item2, typeList);
+                if (num1 == null || num2 == null)
+                {
+                    return "Please enter valid numeric value.";
+                }
+                return num1 - num2;
             }
+            else
+            {
+                var result = item1 - item2;
+                return result;
+            }
+            return "Please enter a valid number";
         }
-        public static dynamic ConvertToNumeric<T>(T  item)
+        public dynamic Divide(dynamic item1, dynamic item2)
         {
-            if(item == null)
+            if (!typeList.Contains(item1.GetType()) && !typeList.Contains(item2.GetType()))
             {
-                throw new ArgumentNullException(nameof(item));
+                return "Please enter a numeric value.";
             }
-            if(item is string s)
+
+            if (item1.GetType() == typeof(string) && item2.GetType() == typeof(string))
             {
-                return Convert.ToDouble(s);
+                var num1 = GetParsedValue(item1, typeList);
+                var num2 = GetParsedValue(item2, typeList);
+                if(num1 == null || num2 == null)
+                {
+                    return "Please enter valid numeric value.";
+                }
+                return num1 / num2;
             }
-            if(item is IConvertible)
+            else
             {
-                return Convert.ChangeType(item, typeof(double));
+                var result = item1 / item2;
+                return result;
             }
-            return "Invalid Type";
+            return "Please enter a valid number";
+        }
+
+        static object GetParsedValue(string str, List<Type> typeList)
+        {
+            if (typeList.Contains(typeof(int)) && int.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
+            {
+                return intValue;
+            }
+            if (typeList.Contains(typeof(int)) && double.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue))
+            {
+                return doubleValue;
+            }
+            if (typeList.Contains(typeof(int)) && long.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out long longValue))
+            {
+                return longValue;
+            }
+            if (typeList.Contains(typeof(int)) && float.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out float floatValue))
+            {
+                return floatValue;
+            }
+            return null;
         }
     }
 }
