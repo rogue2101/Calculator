@@ -17,7 +17,7 @@ namespace CalculateNumbers
             Console.WriteLine(calculator.Divide(10.5, 5));
             Console.WriteLine(calculator.Multiply(true, false));
             Console.WriteLine(calculator.Add("10.5", "5"));
-            Console.WriteLine(calculator.Add("abc", "def"));
+            Console.WriteLine(calculator.Add("abc", "xyz"));
             Console.ReadKey();
         }
     }
